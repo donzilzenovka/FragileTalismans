@@ -1,6 +1,6 @@
 package zenovka.fragiletalismans;
 
-import baubles.common.lib.PlayerHandler;
+import baubles.api.BaublesApi;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ public final class TalismanDamageHandler {
                 event.source.isUnblockable() || event.ammount <= 0.0F ||
                 FragileTalismans.maxDurability <= 0) return;
         EntityPlayer player = (EntityPlayer) event.entityLiving;
-        IInventory baubles = PlayerHandler.getPlayerBaubles(player);
+        IInventory baubles = BaublesApi.getBaubles(player);
         if (baubles == null) return;
         int wear = Math.max(1, (int) Math.floor(event.ammount / 4.0F));
         wear = Math.max(1, (int) Math.ceil(wear * FragileTalismans.damageMultiplier));
