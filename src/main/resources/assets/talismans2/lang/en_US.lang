@@ -6,3 +6,12 @@ item.Movement Talisman.name=Movement Talisman
 item.Mining Talisman.name=Mining Talisman
 item.Invisible Talisman.name=Invisible Talisman
 item.Witherless Talisman.name=Witherless Talisman
+
+item.BrokenFlameTalisman.name=Broken Flame Talisman
+item.BrokenWaterTalisman.name=Broken Water Talisman
+item.BrokenLightTalisman.name=Broken Light Talisman
+item.BrokenMovementTalisman.name=Broken Movement Talisman
+item.BrokenMiningTalisman.name=Broken Mining Talisman
+item.BrokenInvisibleTalisman.name=Broken Invisible Talisman
+item.BrokenWitherlessTalisman.name=Broken Witherless Talisman
+item.BrokenTalisman.name=Broken Talisman
