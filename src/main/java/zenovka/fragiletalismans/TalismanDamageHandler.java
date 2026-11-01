@@ -13,7 +13,7 @@ public final class TalismanDamageHandler {
         if (event.isCanceled() || event.entityLiving.worldObj.isRemote ||
                 !(event.entityLiving instanceof EntityPlayer) ||
                 event.source.isUnblockable() || event.ammount <= 0.0F ||
-                FragileTalismans.maxDurability <= 0) return;
+                !FragileTalismans.enableDurability) return;
         EntityPlayer player = (EntityPlayer) event.entityLiving;
         IInventory baubles = BaublesApi.getBaubles(player);
         if (baubles == null) return;
