@@ -18,7 +18,7 @@ public class TalismanItem extends Item implements IBauble {
         setUnlocalizedName(registryName);
         setTextureName("talismans2:" + texture);
         setMaxStackSize(1);
-        if (wearable && FragileTalismans.maxDurability > 0) setMaxDamage(FragileTalismans.maxDurability);
+        if (wearable && FragileTalismans.enableDurability) setMaxDamage(FragileTalismans.maxDurability);
     }
 
     public String getKind() { return kind; }
