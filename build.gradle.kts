@@ -23,9 +23,13 @@ repositories {
 // Baubles and optional magic APIs will be added when their exact compatible
 // versions are established during source reconstruction.
 dependencies {
-    // Provide the installed Baubles 1.7.10 JAR locally for compilation.
-    // The original Talismans 2 JAR is NOT required.
-    compileOnly(rfg.deobf(files("libs/Baubles-1.7.10.jar")))
+    // Match BaublesExpanded regardless of its frequently changing version suffix.
+    // Fail explicitly if the dependency is missing or ambiguous.
+    val baublesExpandedJars = fileTree("libs") { include("BaublesExpanded*.jar") }.files.toList()
+    require(baublesExpandedJars.size == 1) {
+        "Expected exactly one libs/BaublesExpanded*.jar; found ${baublesExpandedJars.size}"
+    }
+    compileOnly(rfg.deobf(files(baublesExpandedJars.single())))
 }
 
 tasks.withType<JavaCompile>().configureEach {
