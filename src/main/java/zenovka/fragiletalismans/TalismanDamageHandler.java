@@ -26,7 +26,12 @@ public final class TalismanDamageHandler {
             stack.damageItem(wear, player);
             if (stack.stackSize <= 0) {
                 ((TalismanItem) stack.getItem()).onUnequipped(stack, player);
+                int brokenType = BrokenTalismanItem.typeOf(stack);
                 baubles.setInventorySlotContents(slot, null);
+                player.worldObj.playSoundAtEntity(player, "random.glass", 1.0F, 0.9F + player.getRNG().nextFloat() * 0.2F);
+                if (brokenType >= 0 && FragileTalismans.brokenTalisman != null) {
+                    player.entityDropItem(new ItemStack(FragileTalismans.brokenTalisman, 1, brokenType), 0.0F);
+                }
             } else {
                 baubles.markDirty();
             }
