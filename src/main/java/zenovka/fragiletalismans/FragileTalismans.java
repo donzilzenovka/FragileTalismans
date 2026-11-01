@@ -13,6 +13,7 @@ import java.io.File;
 public final class FragileTalismans {
     public static final String MODID = "talismans2";
     public static int maxDurability = 256;
+    public static Item brokenTalisman;
     public static double damageMultiplier = 1.0D;
 
     @Mod.EventHandler
@@ -36,6 +37,8 @@ public final class FragileTalismans {
         register("Mining Talisman", "Mining", true);
         register("Invisible Talisman", "Invisible", true);
         register("Witherless Talisman", "Witherless", true);
+        brokenTalisman = new BrokenTalismanItem();
+        GameRegistry.registerItem(brokenTalisman, "Broken Talisman");
         // Magnet and Crafting are deliberately withheld pending behaviour audit.
     }
 
