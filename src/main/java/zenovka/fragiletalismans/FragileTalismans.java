@@ -1,6 +1,7 @@
 package zenovka.fragiletalismans;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -24,6 +25,7 @@ public final class FragileTalismans {
     private static final boolean[] lootEnabled = new boolean[LOOT_TYPES.length];
     private static final int[] lootWeights = new int[LOOT_TYPES.length];
     private static boolean generateLoot = true;
+    private static boolean enableThaumcraft = true;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -38,6 +40,8 @@ public final class FragileTalismans {
             maxDurability = Math.max(32, Math.min(1024, requestedDurability));
             config.get("durability", "maxTalismanDurability", 256,
                     "Maximum durability of talismans (32 to 1024).").set(maxDurability);
+            enableThaumcraft = config.get("integration", "enableThaumcraft", true,
+                    "Register Thaumcraft 4 research, crucible and infusion recipes when installed.").getBoolean(true);
             generateLoot = config.get("loot", "enableChestLoot", true,
                     "Add talismans to the original four vanilla chest loot pools.").getBoolean(true);
             for (int i = 0; i < LOOT_TYPES.length; i++) {
@@ -77,6 +81,9 @@ public final class FragileTalismans {
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new TalismanDamageHandler());
         registerChestLoot();
+        if (enableThaumcraft && Loader.isModLoaded("Thaumcraft")) {
+            ThaumcraftIntegration.register(lootItems);
+        }
     }
     private static void registerChestLoot() {
         if (!generateLoot) return;
