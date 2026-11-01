@@ -30,6 +30,12 @@ dependencies {
         "Expected exactly one libs/BaublesExpanded*.jar; found ${baublesExpandedJars.size}"
     }
     compileOnly(rfg.deobf(files(baublesExpandedJars.single())))
+    // Optional at runtime; copy Thaumcraft-1.7.10-4.2.3.5.jar to libs for compiling.
+    val thaumcraftJars = fileTree("libs") { include("Thaumcraft-1.7.10-4.2.3.5.jar") }.files.toList()
+    require(thaumcraftJars.size == 1) {
+        "Thaumcraft integration requires libs/Thaumcraft-1.7.10-4.2.3.5.jar"
+    }
+    compileOnly(rfg.deobf(files(thaumcraftJars.single())))
 }
 
 tasks.withType<JavaCompile>().configureEach {
