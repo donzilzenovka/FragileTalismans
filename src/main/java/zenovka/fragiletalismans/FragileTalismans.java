@@ -12,6 +12,7 @@ import java.io.File;
 @Mod(modid = FragileTalismans.MODID, name = "Fragile Talismans", version = "0.1.0", dependencies = "required-after:Baubles")
 public final class FragileTalismans {
     public static final String MODID = "talismans2";
+    public static boolean enableDurability = true;
     public static int maxDurability = 256;
     public static Item brokenTalisman;
     public static double damageMultiplier = 1.0D;
@@ -21,9 +22,14 @@ public final class FragileTalismans {
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         try {
             config.load();
-            maxDurability = config.get("durability", "maxTalismanDurability", 256,
-                    "Maximum durability. Set to zero to disable wear.").getInt(256);
-            maxDurability = Math.max(0, maxDurability);
+            // Honour legacy zero-valued settings when upgrading older configurations.
+            int requestedDurability = config.get("durability", "maxTalismanDurability", 256,
+                    "Maximum durability of talismans (32 to 1024).").getInt(256);
+            enableDurability = config.get("durability", "enableDurability", requestedDurability != 0,
+                    "Whether equipped talismans lose durability when taking damage.").getBoolean(requestedDurability != 0);
+            maxDurability = Math.max(32, Math.min(1024, requestedDurability));
+            config.get("durability", "maxTalismanDurability", 256,
+                    "Maximum durability of talismans (32 to 1024).").set(maxDurability);
             damageMultiplier = Math.max(0.0D, config.get("durability", "damageMultiplier", 1.0D,
                     "Durability loss multiplier applied to armour-style damage.").getDouble(1.0D));
         } finally {
