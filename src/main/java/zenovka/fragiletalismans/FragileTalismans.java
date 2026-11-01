@@ -6,6 +6,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.config.Configuration;
 import java.io.File;
 
@@ -16,6 +19,11 @@ public final class FragileTalismans {
     public static int maxDurability = 256;
     public static Item brokenTalisman;
     public static double damageMultiplier = 1.0D;
+    private static final String[] LOOT_TYPES = {"Blank", "Flame", "Water", "Light", "Movement", "Mining", "Invisible", "Witherless"};
+    private static final Item[] lootItems = new Item[LOOT_TYPES.length];
+    private static final boolean[] lootEnabled = new boolean[LOOT_TYPES.length];
+    private static final int[] lootWeights = new int[LOOT_TYPES.length];
+    private static boolean generateLoot = true;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -30,6 +38,15 @@ public final class FragileTalismans {
             maxDurability = Math.max(32, Math.min(1024, requestedDurability));
             config.get("durability", "maxTalismanDurability", 256,
                     "Maximum durability of talismans (32 to 1024).").set(maxDurability);
+            generateLoot = config.get("loot", "enableChestLoot", true,
+                    "Add talismans to the original four vanilla chest loot pools.").getBoolean(true);
+            for (int i = 0; i < LOOT_TYPES.length; i++) {
+                String type = LOOT_TYPES[i];
+                lootEnabled[i] = config.get("loot", "enable" + type, true,
+                        "Allow " + type + " Talismans to appear in loot chests.").getBoolean(true);
+                lootWeights[i] = Math.max(0, config.get("loot", "weight" + type, 7,
+                        "Relative chest loot weight for " + type + " Talismans (0 disables).", 0, 1000).getInt(7));
+            }
             damageMultiplier = Math.max(0.0D, config.get("durability", "damageMultiplier", 1.0D,
                     "Durability loss multiplier applied to armour-style damage.").getDouble(1.0D));
         } finally {
@@ -51,10 +68,30 @@ public final class FragileTalismans {
     private static void register(String registryName, String texture, boolean wearable) {
         Item item = new TalismanItem(registryName, texture, wearable);
         GameRegistry.registerItem(item, registryName);
+        for (int i = 0; i < LOOT_TYPES.length; i++) {
+            if (LOOT_TYPES[i].equals(texture)) lootItems[i] = item;
+        }
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new TalismanDamageHandler());
+        registerChestLoot();
+    }
+    private static void registerChestLoot() {
+        if (!generateLoot) return;
+        String[] pools = {
+            ChestGenHooks.DUNGEON_CHEST,
+            ChestGenHooks.MINESHAFT_CORRIDOR,
+            ChestGenHooks.PYRAMID_DESERT_CHEST,
+            ChestGenHooks.STRONGHOLD_CORRIDOR
+        };
+        for (int i = 0; i < LOOT_TYPES.length; i++) {
+            if (!lootEnabled[i] || lootWeights[i] <= 0 || lootItems[i] == null) continue;
+            for (String pool : pools) {
+                ChestGenHooks.getInfo(pool).addItem(new WeightedRandomChestContent(
+                        new ItemStack(lootItems[i]), 0, 1, lootWeights[i]));
+            }
+        }
     }
 }
