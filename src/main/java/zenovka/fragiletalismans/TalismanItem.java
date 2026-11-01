@@ -21,6 +21,8 @@ public class TalismanItem extends Item implements IBauble {
         if (wearable && FragileTalismans.maxDurability > 0) setMaxDamage(FragileTalismans.maxDurability);
     }
 
+    public String getKind() { return kind; }
+
     @Override public BaubleType getBaubleType(ItemStack stack) { return BaubleType.AMULET; }
 
     @Override public void onWornTick(ItemStack stack, EntityLivingBase player) {
