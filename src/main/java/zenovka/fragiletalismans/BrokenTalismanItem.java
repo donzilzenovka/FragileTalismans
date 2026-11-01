@@ -44,9 +44,7 @@ public final class BrokenTalismanItem extends Item {
     @Override
     public void registerIcons(IIconRegister register) {
         for (int i = 0; i < TYPES.length; i++) {
-            // Until custom cracked artwork is added, reuse the corresponding
-            // intact talisman icon rather than showing a missing texture.
-            icons[i] = register.registerIcon("talismans2:" + TYPES[i]);
+            icons[i] = register.registerIcon("talismans2:" + TYPES[i] + "_Crack");
         }
         itemIcon = icons[0];
     }
